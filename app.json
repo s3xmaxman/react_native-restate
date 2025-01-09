@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "react_native-restate",
-    "slug": "react_native-restate",
+    "name": "react_native_restate",
+    "slug": "react_native_restate",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.s3xmaxman.react_native_restate"
     },
     "web": {
       "bundler": "metro",
