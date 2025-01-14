@@ -114,6 +114,8 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 10,
     marginTop: 5,
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
   loginButtonContent: {
     flexDirection: "row",
