@@ -1,101 +1,44 @@
 import { Alert } from "react-native";
 import { useEffect, useState, useCallback } from "react";
 
-/**
- *  @interface UseAppwriteOptions
- *  @description Appwrite API呼び出しのオプション
- *  @template T - APIの結果型
- *  @template P - APIパラメータ型
- */
 interface UseAppwriteOptions<T, P extends Record<string, string | number>> {
-  /**
-   *  @property fn
-   *  @description API呼び出し関数
-   *  @param {P} params - APIパラメータ
-   *  @returns {Promise<T>} - API結果Promise
-   */
   fn: (params: P) => Promise<T>;
-  /**
-   *  @property params
-   *  @description APIパラメータ
-   *  @optional
-   */
   params?: P;
-  /**
-   *  @property skip
-   *  @description API呼び出しをスキップするか
-   *  @optional
-   *  @default false
-   */
   skip?: boolean;
 }
 
-/**
- *  @interface UseAppwriteReturn
- *  @description useAppwriteフックの戻り値
- *  @template T - APIの結果型
- *  @template P - APIパラメータ型
- */
 interface UseAppwriteReturn<T, P> {
-  /**
-   *  @property data
-   *  @description API結果データ
-   */
   data: T | null;
-  /**
-   *  @property loading
-   *  @description APIローディング状態
-   */
   loading: boolean;
-  /**
-   *  @property error
-   *  @description APIエラーメッセージ
-   */
   error: string | null;
-  /**
-   *  @property refetch
-   *  @description API再実行関数
-   *  @param {P} newParams - 新しいパラメータ
-   *  @returns {Promise<void>}
-   */
   refetch: (newParams: P) => Promise<void>;
 }
 
 /**
- *  @function useAppwrite
- *  @description Appwrite API呼び出しフック
- *  @template T - APIの結果型
- *  @template P - APIパラメータ型
- *  @param {UseAppwriteOptions<T, P>} options - フックオプション
- *  @returns {UseAppwriteReturn<T, P>} - フック戻り値
+ * Appwrite API呼び出しと結果のキャッシュを処理するためのフック
+ *
+ * @param {UseAppwriteOptions<T, P>} options
+ * @param {function(P): Promise<T>} options.fn 呼び出すAppwrite API関数
+ * @param {P} [options.params={}] Appwrite API関数に渡すパラメータ
+ * @param {boolean} [options.skip=false] trueの場合、API関数を即座に呼び出さない。
+ *   代わりに、呼び出し元が返される`refetch`関数を呼び出してデータを取得する必要がある。
+ *
+ * @returns {UseAppwriteReturn<T, P>}
+ * @returns {T | null} data 取得したデータ、またはまだ読み込み中かエラーが発生した場合はnull
+ * @returns {boolean} loading データが現在取得中かどうか
+ * @returns {string | null} error 取得中にエラーが発生した場合のエラーメッセージ、それ以外はnull
+ * @returns {function(P): Promise<void>} refetch 新しいパラメータでデータを再取得する
  */
+
 export const useAppwrite = <T, P extends Record<string, string | number>>({
   fn,
   params = {} as P,
   skip = false,
 }: UseAppwriteOptions<T, P>): UseAppwriteReturn<T, P> => {
-  /**
-   *  @state data
-   *  @description API結果データ状態
-   */
   const [data, setData] = useState<T | null>(null);
-  /**
-   *  @state loading
-   *  @description APIローディング状態
-   */
   const [loading, setLoading] = useState(!skip);
-  /**
-   *  @state error
-   *  @description APIエラーメッセージ状態
-   */
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   *  @function fetchData
-   *  @description API呼び出し実行関数
-   *  @param {P} fetchParams - APIパラメータ
-   *  @returns {Promise<void>}
-   */
   const fetchData = useCallback(
     async (fetchParams: P) => {
       setLoading(true);
@@ -122,12 +65,6 @@ export const useAppwrite = <T, P extends Record<string, string | number>>({
     }
   }, []);
 
-  /**
-   *  @function refetch
-   *  @description API再実行関数
-   *  @param {P} newParams - 新しいパラメータ
-   *  @returns {Promise<void>}
-   */
   const refetch = async (newParams: P) => await fetchData(newParams);
 
   return { data, loading, error, refetch };
