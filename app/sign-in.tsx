@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     fontFamily: "Rubik",
     color: "#222", // text-black-200
     textAlign: "center",
-    marginTop: 15,
+    marginTop: 12,
     padding: 10,
   },
   loginButton: {
