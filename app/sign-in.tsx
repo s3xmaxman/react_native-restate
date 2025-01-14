@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  StyleSheet,
 } from "react-native";
 
 import { login } from "@/lib/appwrite";
@@ -30,45 +31,32 @@ const SignIn = () => {
   };
 
   return (
-    <SafeAreaView className="bg-white h-full">
-      <ScrollView
-        contentContainerStyle={{
-          height: "100%",
-        }}
-      >
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <Image
           source={images.onboarding}
-          className="w-full h-4/6"
+          style={styles.onboardingImage}
           resizeMode="contain"
         />
 
-        <View className="px-10">
-          <Text className="text-base text-center uppercase font-rubik text-black-200">
-            Welcome To Real Scout
-          </Text>
+        <View style={styles.contentView}>
+          <Text style={styles.welcomeText}>Welcome To Real Scout</Text>
 
-          <Text className="text-3xl font-rubik-bold text-black-300 text-center mt-2">
+          <Text style={styles.titleText}>
             Let's Get You Closer To {"\n"}
-            <Text className="text-primary-300">Your Ideal Home</Text>
+            <Text style={styles.primaryText}>Your Ideal Home</Text>
           </Text>
 
-          <Text className="text-lg font-rubik text-black-200 text-center mt-12">
-            Login to Real Scout with Google
-          </Text>
+          <Text style={styles.loginText}>Login to Real Scout with Google</Text>
 
-          <TouchableOpacity
-            onPress={handleLogin}
-            className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5"
-          >
-            <View className="flex flex-row items-center justify-center">
+          <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
+            <View style={styles.loginButtonContent}>
               <Image
                 source={icons.google}
-                className="w-5 h-5"
+                style={styles.googleIcon}
                 resizeMode="contain"
               />
-              <Text className="text-lg font-rubik-medium text-black-300 ml-2">
-                Continue with Google
-              </Text>
+              <Text style={styles.loginButtonText}>Continue with Google</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -76,5 +64,72 @@ const SignIn = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: "white",
+    height: "100%",
+  },
+  scrollViewContent: {
+    height: "100%",
+  },
+  onboardingImage: {
+    width: "100%",
+    height: "66.66%", // 4/6
+  },
+  contentView: {
+    paddingHorizontal: 10,
+  },
+  welcomeText: {
+    fontSize: 16,
+    textAlign: "center",
+    textTransform: "uppercase",
+    fontFamily: "Rubik",
+    color: "#222", // text-black-200
+  },
+  titleText: {
+    fontSize: 30,
+    fontFamily: "Rubik-Bold",
+    color: "#333", // text-black-300
+    textAlign: "center",
+    marginTop: 2,
+  },
+  primaryText: {
+    color: "#007bff", // text-primary-300
+  },
+  loginText: {
+    fontSize: 18,
+    fontFamily: "Rubik",
+    color: "#222", // text-black-200
+    textAlign: "center",
+    marginTop: 12,
+  },
+  loginButton: {
+    backgroundColor: "white",
+    shadowColor: "#333", // shadow-zinc-300
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    borderRadius: 999,
+    width: "100%",
+    paddingVertical: 10,
+    marginTop: 5,
+  },
+  loginButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  googleIcon: {
+    width: 20,
+    height: 20,
+  },
+  loginButtonText: {
+    fontSize: 18,
+    fontFamily: "Rubik-Medium",
+    color: "#333", // text-black-300
+    marginLeft: 2,
+  },
+});
 
 export default SignIn;

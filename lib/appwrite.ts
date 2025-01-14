@@ -13,43 +13,16 @@ import { openAuthSessionAsync } from "expo-web-browser";
  * Appwriteの設定を保持するオブジェクト。
  */
 export const config = {
-  /**
-   * アプリケーションのプラットフォームID。
-   */
-  platform: "com.restate.s3xmaxman",
-  /**
-   * AppwriteのエンドポイントURL。
-   */
+  platform: "com.restate-s3xmaxman",
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
-  /**
-   * AppwriteのプロジェクトID。
-   */
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
-  /**
-   * AppwriteのデータベースID。
-   */
   databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID,
-  /**
-   * ギャラリーコレクションのID。
-   */
   galleriesCollectionId:
     process.env.EXPO_PUBLIC_APPWRITE_GALLERIES_COLLECTION_ID,
-  /**
-   * レビューコレクションのID。
-   */
   reviewsCollectionId: process.env.EXPO_PUBLIC_APPWRITE_REVIEWS_COLLECTION_ID,
-  /**
-   * エージェントコレクションのID。
-   */
   agentsCollectionId: process.env.EXPO_PUBLIC_APPWRITE_AGENTS_COLLECTION_ID,
-  /**
-   * プロパティコレクションのID。
-   */
   propertiesCollectionId:
     process.env.EXPO_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID,
-  /**
-   * ストレージバケットのID。
-   */
   bucketId: process.env.EXPO_PUBLIC_APPWRITE_BUCKET_ID,
 };
 
@@ -63,21 +36,9 @@ client
   .setProject(config.projectId!)
   .setPlatform(config.platform!);
 
-/**
- * アバター関連の操作を行うためのAvatarsインスタンス。
- */
 export const avatar = new Avatars(client);
-/**
- * アカウント関連の操作を行うためのAccountインスタンス。
- */
 export const account = new Account(client);
-/**
- * データベース関連の操作を行うためのDatabasesインスタンス。
- */
 export const databases = new Databases(client);
-/**
- * ストレージ関連の操作を行うためのStorageインスタンス。
- */
 export const storage = new Storage(client);
 
 /**
