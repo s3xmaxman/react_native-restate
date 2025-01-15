@@ -13,7 +13,7 @@ import { openAuthSessionAsync } from "expo-web-browser";
  * Appwriteの設定を保持するオブジェクト。
  */
 export const config = {
-  platform: "com.s3xmaxman.restate",
+  platform: "com.s3xmaxman.react_native_restate",
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
   databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID,
@@ -79,7 +79,7 @@ export async function login() {
 
     // シークレットまたはユーザーIDがnullの場合、エラーをスロー
     if (!secret || !userId) {
-      throw new Error("Create OAuth2 token failed");
+      throw new Error("Create OAuth2 token failed secret or userId is null");
     }
 
     // セッションを作成
