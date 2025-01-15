@@ -28,7 +28,7 @@ const Index = () => {
   const params = useLocalSearchParams<{ query?: string; filters?: string }>();
 
   return (
-    <SafeAreaView className="h-full bg-white">
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={properties}
         numColumns={2}
@@ -36,53 +36,49 @@ const Index = () => {
           <Card item={item} onPress={() => handleCardPress(item.$id)} />
         )}
         keyExtractor={(item) => item.$id}
-        contentContainerClassName="pb-32"
-        columnWrapperClassName="flex gap-5 px-5"
+        contentContainerStyle={styles.listContent}
+        columnWrapperStyle={styles.columnWrapper}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           loading ? (
-            <ActivityIndicator size="large" className="text-primary-300 mt-5" />
+            <ActivityIndicator
+              size="large"
+              color={colors.primary[300]}
+              style={styles.loadingIndicator}
+            />
           ) : (
             <NoResults />
           )
         }
         ListHeaderComponent={() => (
-          <View className="px-5">
-            <View className="flex flex-row items-center justify-between mt-5">
-              <View className="flex flex-row">
+          <View style={styles.headerContainer}>
+            <View style={styles.userInfoContainer}>
+              <View style={styles.userAvatarContainer}>
                 <Image
                   source={{ uri: user?.avatar }}
-                  className="size-12 rounded-full"
+                  style={styles.userAvatar}
                 />
 
-                <View className="flex flex-col items-start ml-2 justify-center">
-                  <Text className="text-xs font-rubik text-black-100">
-                    Good Morning
-                  </Text>
-                  <Text className="text-base font-rubik-medium text-black-300">
-                    {user?.name}
-                  </Text>
+                <View style={styles.userTextContainer}>
+                  <Text style={styles.greetingText}>Good Morning</Text>
+                  <Text style={styles.userName}>{user?.name}</Text>
                 </View>
               </View>
-              <Image source={icons.bell} className="size-6" />
+              <Image source={icons.bell} style={styles.bellIcon} />
             </View>
 
             <Search />
 
-            <View className="my-5">
-              <View className="flex flex-row items-center justify-between">
-                <Text className="text-xl font-rubik-bold text-black-300">
-                  Featured
-                </Text>
+            <View style={styles.sectionContainer}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Featured</Text>
                 <TouchableOpacity>
-                  <Text className="text-base font-rubik-bold text-primary-300">
-                    See all
-                  </Text>
+                  <Text style={styles.seeAllText}>See all</Text>
                 </TouchableOpacity>
               </View>
 
               {latestPropertiesLoading ? (
-                <ActivityIndicator size="large" className="text-primary-300" />
+                <ActivityIndicator size="large" color={colors.primary[300]} />
               ) : !latestProperties || latestProperties.length === 0 ? (
                 <NoResults />
               ) : (
@@ -97,22 +93,16 @@ const Index = () => {
                   keyExtractor={(item) => item.$id}
                   horizontal
                   showsHorizontalScrollIndicator={false}
-                  contentContainerClassName="flex gap-5 mt-5"
+                  contentContainerStyle={styles.featuredListContent}
                 />
               )}
             </View>
 
-            {/* <Button title="seed" onPress={seed} /> */}
-
-            <View className="mt-5">
-              <View className="flex flex-row items-center justify-between">
-                <Text className="text-xl font-rubik-bold text-black-300">
-                  Our Recommendation
-                </Text>
+            <View style={styles.sectionContainer}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Our Recommendation</Text>
                 <TouchableOpacity>
-                  <Text className="text-base font-rubik-bold text-primary-300">
-                    See all
-                  </Text>
+                  <Text style={styles.seeAllText}>See all</Text>
                 </TouchableOpacity>
               </View>
 
@@ -125,6 +115,98 @@ const Index = () => {
   );
 };
 
-export default Index;
+const colors = {
+  primary: {
+    300: "#FF6347", // 鮮やかなオレンジ
+  },
+  black: {
+    100: "#191D31", // 濃いグレー
+    300: "#333333", // 中間グレー
+  },
+  white: "#FFFFFF", // 純白
+};
 
-const styles = StyleSheet.create({});
+const fonts = {
+  bold: "Rubik-Bold",
+  medium: "Rubik-Medium",
+  regular: "Rubik-Regular",
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  listContent: {
+    paddingBottom: 128, // pb-32
+  },
+  columnWrapper: {
+    gap: 20, // gap-5
+    paddingHorizontal: 20, // px-5
+  },
+  loadingIndicator: {
+    marginTop: 20, // mt-5
+  },
+  headerContainer: {
+    paddingHorizontal: 20, // px-5
+  },
+  userInfoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 20, // mt-5
+  },
+  userAvatarContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  userAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
+  userTextContainer: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    marginLeft: 8, // ml-2
+  },
+  greetingText: {
+    fontSize: 12,
+    fontFamily: fonts.regular,
+    color: colors.black[100],
+  },
+  userName: {
+    fontSize: 16,
+    fontFamily: fonts.medium,
+    color: colors.black[300],
+  },
+  bellIcon: {
+    width: 24,
+    height: 24,
+  },
+  sectionContainer: {
+    marginVertical: 20, // my-5
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontFamily: fonts.bold,
+    color: colors.black[300],
+  },
+  seeAllText: {
+    fontSize: 16,
+    fontFamily: fonts.bold,
+    color: colors.primary[300],
+  },
+  featuredListContent: {
+    gap: 20, // gap-5
+    marginTop: 20, // mt-5
+  },
+});
+
+export default Index;
