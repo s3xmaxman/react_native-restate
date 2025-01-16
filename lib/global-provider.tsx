@@ -8,7 +8,7 @@ interface GlobalContextType {
   isLogged: boolean;
   user: User | null;
   loading: boolean;
-  refetch: (newParams?: Record<string, string | number>) => Promise<void>;
+  refetch: () => void;
 }
 
 interface User {
@@ -51,7 +51,6 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
 
 export const useGlobalContext = (): GlobalContextType => {
   const context = useContext(GlobalContext);
-
   if (!context)
     throw new Error("useGlobalContext must be used within a GlobalProvider");
 

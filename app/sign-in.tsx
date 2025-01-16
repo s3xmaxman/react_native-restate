@@ -22,11 +22,44 @@ const SignIn = () => {
   if (!loading && isLogged) return <Redirect href="/" />;
 
   const handleLogin = async () => {
-    const result = await login();
-    if (result) {
-      refetch();
-    } else {
-      Alert.alert("Error", "Failed to login");
+    try {
+      const result = await login();
+      if (result) {
+        refetch();
+      }
+    } catch (error) {
+      let errorMessage = "ログインに失敗しました";
+
+      if (error instanceof Error) {
+        if (error.message.includes("無効なユーザーID形式")) {
+          errorMessage =
+            "ユーザーIDの形式が無効です。Googleアカウントの設定を確認してください。";
+        } else if (
+          error.message.includes("シークレットまたはユーザーIDがnull")
+        ) {
+          errorMessage = "認証情報の取得に失敗しました。再度お試しください。";
+        } else if (error.message.includes("セッションの作成に失敗")) {
+          errorMessage =
+            "セッションの作成に失敗しました。ネットワーク接続を確認してください。";
+        } else if (error.message.includes("認証セッションの開始に失敗")) {
+          errorMessage =
+            "認証プロセスが中断されました。ブラウザの設定を確認してください。";
+        } else if (error.message.includes("OAuth2トークンの作成に失敗")) {
+          errorMessage =
+            "認証トークンの作成に失敗しました。Googleアカウントの連携を確認してください。";
+        }
+      }
+
+      Alert.alert("ログインエラー", errorMessage, [
+        {
+          text: "再試行",
+          onPress: () => handleLogin(),
+        },
+        {
+          text: "キャンセル",
+          style: "cancel",
+        },
+      ]);
     }
   };
 

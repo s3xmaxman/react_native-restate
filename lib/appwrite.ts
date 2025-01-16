@@ -27,6 +27,36 @@ export const config = {
 };
 
 /**
+ * userIdをAppwriteの要件に適合するように変換する関数
+ */
+function normalizeUserId(userId: string): string {
+  // 許可された文字のみを保持（a-z, A-Z, 0-9, ., -, _）
+  let normalized = userId.replace(/[^a-zA-Z0-9._-]/g, "");
+
+  // 先頭が英数字でない場合は修正
+  if (!/^[a-zA-Z0-9]/.test(normalized)) {
+    normalized = "u" + normalized.replace(/^[^a-zA-Z0-9]+/, "");
+  }
+
+  // 連続する特殊文字を単一の文字に置換
+  normalized = normalized
+    .replace(/\.{2,}/g, ".")
+    .replace(/-{2,}/g, "-")
+    .replace(/_{2,}/g, "_");
+
+  // 長さを36文字以内に制限
+  return normalized.substring(0, 36);
+}
+
+/**
+ * userIdのバリデーションを行う関数
+ */
+function validateUserId(userId: string): boolean {
+  const regex = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/;
+  return regex.test(userId);
+}
+
+/**
  * Appwriteクライアントのインスタンス。
  */
 export const client = new Client();
@@ -58,7 +88,7 @@ export async function login() {
 
     // レスポンスがnullの場合、エラーをスロー
     if (!response) {
-      throw new Error("Something went wrong");
+      throw new Error("OAuth2トークンの作成に失敗しました");
     }
 
     // 認証セッションを開く
@@ -69,31 +99,52 @@ export async function login() {
 
     // 認証セッションが失敗した場合、エラーをスロー
     if (browserResult.type !== "success") {
-      throw new Error("Create OAuth2 token failed");
+      throw new Error("認証セッションの開始に失敗しました");
     }
 
     // URLからシークレットとユーザーIDを取得
     const url = new URL(browserResult.url);
     const secret = url.searchParams.get("secret")?.toString();
-    const userId = url.searchParams.get("userId")?.toString();
+    let userId = url.searchParams.get("userId")?.toString();
 
     // シークレットまたはユーザーIDがnullの場合、エラーをスロー
     if (!secret || !userId) {
-      throw new Error("Create OAuth2 token failed secret or userId is null");
+      throw new Error("シークレットまたはユーザーIDがnullです");
     }
+
+    // userIdから#を削除
+    userId = userId.replace(/#/g, "");
+
+    // userIdを正規化
+    userId = normalizeUserId(userId);
+
+    // 正規化後のuserIdをログに記録
+    console.log("Normalized userId:", userId);
+
+    // userIdのバリデーション
+    if (!validateUserId(userId)) {
+      throw new Error(
+        "無効なユーザーID形式です。ユーザーIDは36文字以内で、a-z、A-Z、0-9、ピリオド、ハイフン、アンダースコアのみ使用可能で、特殊文字で始めることはできません"
+      );
+    }
+
+    // ゲストユーザーのスコープを設定
+    await account.updatePrefs({
+      scopes: ["account"],
+    });
 
     // セッションを作成
     const session = await account.createSession(secret, userId);
 
     // セッションがnullの場合、エラーをスロー
     if (!session) {
-      throw new Error("Failed to create session");
+      throw new Error("セッションの作成に失敗しました");
     }
 
     return true;
   } catch (error) {
-    console.log(error);
-    return false;
+    console.error("ログインエラー:", error);
+    throw error;
   }
 }
 
@@ -106,7 +157,7 @@ export async function logout() {
     const result = await account.deleteSession("current");
     return result;
   } catch (error) {
-    console.log(error);
+    console.error("ログアウトエラー:", error);
     return false;
   }
 }
