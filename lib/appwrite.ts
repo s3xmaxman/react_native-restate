@@ -4,6 +4,7 @@ import {
   Client,
   Databases,
   OAuthProvider,
+  Query,
   Storage,
 } from "react-native-appwrite";
 import * as Linking from "expo-linking";
@@ -182,6 +183,109 @@ export async function getCurrentUser() {
     return null;
   } catch (error) {
     console.log(error);
+    return null;
+  }
+}
+
+/**
+ * 最新のプロパティを最大5件取得します。
+ * @returns {Promise<Array<object>>} - プロパティオブジェクトの配列を返します。エラーが発生した場合は空の配列を返します。
+ * @throws {Error} - データベース接続エラーが発生した場合にスローされます。
+ * @example
+ * const properties = await getLatestProperties();
+ * console.log(properties); // [{...}, {...}, ...]
+ */
+export async function getLatestProperties() {
+  try {
+    const result = await databases.listDocuments(
+      config.databaseId!,
+      config.propertiesCollectionId!,
+      [Query.orderAsc("createdAt"), Query.limit(5)]
+    );
+
+    return result.documents;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+/**
+ * 指定された条件でプロパティを検索します。
+ * @param {Object} params - 検索パラメータ
+ * @param {string} params.filter - プロパティタイプでフィルタリングする値（例: "House", "Apartment"）。"All"を指定するとフィルタリングしません。
+ * @param {string} params.query - プロパティ名、住所、タイプを検索するクエリ文字列
+ * @param {number} [params.limit] - 取得するプロパティの最大件数
+ * @returns {Promise<Array<object>>} - プロパティオブジェクトの配列を返します。エラーが発生した場合は空の配列を返します。
+ * @throws {Error} - データベース接続エラーが発生した場合にスローされます。
+ * @example
+ * // タイプが"House"で、名前または住所に"Tokyo"を含むプロパティを最大10件取得
+ * const properties = await getProperties({
+ *   filter: "House",
+ *   query: "Tokyo",
+ *   limit: 10
+ * });
+ */
+export async function getProperties({
+  filter,
+  query,
+  limit,
+}: {
+  filter: string;
+  query: string;
+  limit?: number;
+}) {
+  try {
+    const buildQuery = [Query.orderDesc("$createdAt")];
+
+    if (filter && filter !== "All")
+      buildQuery.push(Query.equal("type", filter));
+
+    if (query)
+      buildQuery.push(
+        Query.or([
+          Query.search("name", query),
+          Query.search("address", query),
+          Query.search("type", query),
+        ])
+      );
+
+    if (limit) buildQuery.push(Query.limit(limit));
+
+    const result = await databases.listDocuments(
+      config.databaseId!,
+      config.propertiesCollectionId!,
+      buildQuery
+    );
+
+    return result.documents;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+/**
+ * 指定されたIDのプロパティを取得します。
+ * @param {Object} params - パラメータオブジェクト
+ * @param {string} params.id - 取得するプロパティのID（36文字の英数字とハイフンで構成）
+ * @returns {Promise<object|null>} - プロパティオブジェクトを返します。プロパティが見つからない場合やエラーが発生した場合はnullを返します。
+ * @throws {Error} - データベース接続エラーが発生した場合にスローされます。
+ * @example
+ * const property = await getPropertyById({ id: "64c9a1f2e4b0a1b2c3d4e5f6" });
+ * console.log(property); // {...}
+ */
+export async function getPropertyById({ id }: { id: string }) {
+  try {
+    const result = await databases.getDocument(
+      config.databaseId!,
+      config.propertiesCollectionId!,
+      id
+    );
+
+    return result;
+  } catch (error) {
+    console.error(error);
     return null;
   }
 }
