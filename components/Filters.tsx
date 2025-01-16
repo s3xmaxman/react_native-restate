@@ -8,6 +8,8 @@ import {
 import React, { useState } from "react";
 import { categories } from "@/constants/data";
 import { router, useLocalSearchParams } from "expo-router";
+import { colors } from "@/constants/colors";
+import { fonts } from "@/constants/fonts";
 
 const Filters = () => {
   const params = useLocalSearchParams<{ filters?: string }>();
@@ -60,56 +62,38 @@ const Filters = () => {
   );
 };
 
-// Cards.tsxで定義した色とフォントを再利用
-const colors = {
-  primary: {
-    100: "#FFE5E0", // 薄いオレンジ
-    200: "#FFC7B8", // 中間オレンジ
-    300: "#FF6347", // 鮮やかなオレンジ
-  },
-  black: {
-    300: "#333333", // 中間グレー
-  },
-  white: "#FFFFFF", // 純白
-};
-
-const fonts = {
-  bold: "Rubik-Bold",
-  regular: "Rubik-Regular",
-};
-
 const styles = StyleSheet.create({
   container: {
-    marginTop: 12, // mt-3
-    marginBottom: 8, // mb-2
+    marginTop: 12,
+    marginBottom: 8,
   },
   categoryButton: {
     flexDirection: "column",
     alignItems: "flex-start",
-    marginRight: 16, // mr-4
-    paddingHorizontal: 16, // px-4
-    paddingVertical: 8, // py-2
-    borderRadius: 999, // rounded-full
+    marginRight: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
   },
   selectedCategory: {
-    backgroundColor: colors.primary[300], // bg-primary-300
+    backgroundColor: colors.primary[300],
   },
   unselectedCategory: {
-    backgroundColor: colors.primary[100], // bg-primary-100
-    borderWidth: 1, // border
-    borderColor: colors.primary[200], // border-primary-200
+    backgroundColor: colors.primary[100],
+    borderWidth: 1,
+    borderColor: colors.primary[200],
   },
   categoryText: {
-    fontSize: 14, // text-sm
+    fontSize: 14,
   },
   selectedText: {
-    color: colors.white, // text-white
-    fontFamily: fonts.bold, // font-rubik-bold
-    marginTop: 2, // mt-0.5
+    color: colors.white,
+    fontFamily: fonts.bold,
+    marginTop: 2,
   },
   unselectedText: {
-    color: colors.black[300], // text-black-300
-    fontFamily: fonts.regular, // font-rubik
+    color: colors.black[300],
+    fontFamily: fonts.regular,
   },
 });
 

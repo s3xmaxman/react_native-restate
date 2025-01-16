@@ -3,22 +3,57 @@ import icons from "@/constants/icons";
 import images from "@/constants/images";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { Models } from "react-native-appwrite";
+import { colors } from "@/constants/colors";
 
 interface Props {
   item: Models.Document;
   onPress?: () => void;
 }
 
+// 共通スタイルの抽出
+const commonStyles = StyleSheet.create({
+  ratingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    position: "absolute",
+    top: 20,
+    right: 20,
+  },
+  ratingIcon: {
+    width: 14,
+    height: 14,
+  },
+  ratingText: {
+    fontSize: 12,
+    fontFamily: "Rubik-Bold",
+    color: colors.primary[300],
+    marginLeft: 4,
+  },
+  priceContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  heartIcon: {
+    width: 20,
+    height: 20,
+  },
+});
+
 export const FeaturedCard = ({ item, onPress }: Props) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.featuredContainer}>
       <Image source={{ uri: item.image }} style={styles.featuredImage} />
-
       <Image source={images.cardGradient} style={styles.featuredGradient} />
 
-      <View style={styles.ratingContainer}>
-        <Image source={icons.star} style={styles.ratingIcon} />
-        <Text style={styles.ratingText}>{item.rating}</Text>
+      <View style={commonStyles.ratingContainer}>
+        <Image source={icons.star} style={commonStyles.ratingIcon} />
+        <Text style={commonStyles.ratingText}>{item.rating}</Text>
       </View>
 
       <View style={styles.featuredContent}>
@@ -29,9 +64,9 @@ export const FeaturedCard = ({ item, onPress }: Props) => {
           {item.address}
         </Text>
 
-        <View style={styles.featuredPriceContainer}>
+        <View style={commonStyles.priceContainer}>
           <Text style={styles.featuredPrice}>${item.price}</Text>
-          <Image source={icons.heart} style={styles.featuredHeartIcon} />
+          <Image source={icons.heart} style={commonStyles.heartIcon} />
         </View>
       </View>
     </TouchableOpacity>
@@ -41,12 +76,12 @@ export const FeaturedCard = ({ item, onPress }: Props) => {
 export const Card = ({ item, onPress }: Props) => {
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
-      <View style={styles.ratingContainer}>
+      <View style={[commonStyles.ratingContainer, { top: 12, right: 12 }]}>
         <Image
           source={icons.star}
-          style={[styles.ratingIcon, { width: 10, height: 10 }]}
+          style={[commonStyles.ratingIcon, { width: 10, height: 10 }]}
         />
-        <Text style={styles.ratingText}>{item.rating}</Text>
+        <Text style={commonStyles.ratingText}>{item.rating}</Text>
       </View>
 
       <Image source={{ uri: item.image }} style={styles.cardImage} />
@@ -55,32 +90,16 @@ export const Card = ({ item, onPress }: Props) => {
         <Text style={styles.cardTitle}>{item.name}</Text>
         <Text style={styles.cardAddress}>{item.address}</Text>
 
-        <View style={styles.cardPriceContainer}>
+        <View style={commonStyles.priceContainer}>
           <Text style={styles.cardPrice}>${item.price}</Text>
-          <Image source={icons.heart} style={styles.cardHeartIcon} />
+          <Image
+            source={icons.heart}
+            style={[commonStyles.heartIcon, { tintColor: colors.black[100] }]}
+          />
         </View>
       </View>
     </TouchableOpacity>
   );
-};
-
-// 直接定義するカラースキーム
-const colors = {
-  primary: {
-    300: "#FF6347", // 鮮やかなオレンジ
-  },
-  black: {
-    100: "#191D31", // 濃いグレー
-    300: "#333333", // 中間グレー
-  },
-  white: "#FFFFFF", // 純白
-};
-
-// 直接定義するフォントスタイル
-const fonts = {
-  bold: "Rubik-Bold",
-  extrabold: "Rubik-ExtraBold",
-  regular: "Rubik-Regular",
 };
 
 const styles = StyleSheet.create({
@@ -103,27 +122,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
   },
-  ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-    position: "absolute",
-    top: 20,
-    right: 20,
-  },
-  ratingIcon: {
-    width: 14,
-    height: 14,
-  },
-  ratingText: {
-    fontSize: 12,
-    fontFamily: fonts.bold,
-    color: colors.primary[300],
-    marginLeft: 4,
-  },
   featuredContent: {
     flexDirection: "column",
     alignItems: "flex-start",
@@ -134,28 +132,18 @@ const styles = StyleSheet.create({
   },
   featuredTitle: {
     fontSize: 20,
-    fontFamily: fonts.extrabold,
+    fontFamily: "Rubik-ExtraBold",
     color: colors.white,
   },
   featuredAddress: {
     fontSize: 16,
-    fontFamily: fonts.regular,
+    fontFamily: "Rubik-Regular",
     color: colors.white,
-  },
-  featuredPriceContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
   },
   featuredPrice: {
     fontSize: 20,
-    fontFamily: fonts.extrabold,
+    fontFamily: "Rubik-ExtraBold",
     color: colors.white,
-  },
-  featuredHeartIcon: {
-    width: 20,
-    height: 20,
   },
 
   // Cardコンポーネントのスタイル
@@ -184,30 +172,20 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: "Rubik-Bold",
     color: colors.black[300],
   },
   cardAddress: {
     fontSize: 12,
-    fontFamily: fonts.regular,
+    fontFamily: "Rubik-Regular",
     color: colors.black[100],
     marginTop: 4,
   },
-  cardPriceContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 8,
-  },
   cardPrice: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: "Rubik-Bold",
     color: colors.primary[300],
   },
-  cardHeartIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-    tintColor: colors.black[100],
-  },
 });
+
+export default { FeaturedCard, Card };

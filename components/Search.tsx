@@ -10,6 +10,8 @@ import { useDebouncedCallback } from "use-debounce";
 
 import icons from "@/constants/icons";
 import { useLocalSearchParams, router, usePathname } from "expo-router";
+import { colors } from "@/constants/colors";
+import { fonts } from "@/constants/fonts";
 
 const Search = () => {
   const path = usePathname();
@@ -27,56 +29,63 @@ const Search = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <Image source={icons.search} style={styles.icon} />
+    <View style={styles.searchWrapper}>
+      <View style={styles.searchBar}>
+        <Image source={icons.search} style={styles.searchIcon} />
         <TextInput
           value={search}
           onChangeText={handleSearch}
           placeholder="Search for anything"
-          style={styles.input}
-          placeholderTextColor="#9CA3AF"
+          style={styles.searchInput}
+          placeholderTextColor={colors.black[200]}
         />
       </View>
 
-      <TouchableOpacity>
-        <Image source={icons.filter} style={styles.icon} />
+      <TouchableOpacity style={styles.filterButton}>
+        <Image source={icons.filter} style={styles.filterIcon} />
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  searchWrapper: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: "#F3F4F6", // bg-accent-100
+    backgroundColor: colors.primary[100],
     borderWidth: 1,
-    borderColor: "#D1D5DB", // border-primary-100
+    borderColor: colors.primary[200],
     marginTop: 20,
     paddingVertical: 8,
   },
-  searchContainer: {
+  searchBar: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
     zIndex: 50,
   },
-  icon: {
+  searchIcon: {
     width: 20,
     height: 20,
   },
-  input: {
+  searchInput: {
     fontSize: 14,
-    fontFamily: "Rubik-Regular",
-    color: "#374151", // text-black-300
+    fontFamily: fonts.regular,
+    color: colors.black[300],
     marginLeft: 8,
     flex: 1,
+  },
+  filterButton: {
+    marginLeft: 12,
+  },
+  filterIcon: {
+    width: 20,
+    height: 20,
   },
 });
 

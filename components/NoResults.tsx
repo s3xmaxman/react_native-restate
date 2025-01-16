@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import images from "@/constants/images";
+import { colors } from "@/constants/colors";
+import { fonts } from "@/constants/fonts";
 
 const NoResults = () => {
   return (
@@ -25,13 +27,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontFamily: "Rubik-Bold",
-    color: "#333333",
+    fontFamily: fonts.bold,
+    color: colors.black[300],
     marginTop: 20,
   },
   description: {
     fontSize: 16,
-    color: "#666666",
+    color: colors.black[200],
     marginTop: 8,
   },
 });
