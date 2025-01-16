@@ -129,11 +129,6 @@ export async function login() {
       );
     }
 
-    // ゲストユーザーのスコープを設定
-    await account.updatePrefs({
-      scopes: ["account"],
-    });
-
     // セッションを作成
     const session = await account.createSession(secret, userId);
 
@@ -170,6 +165,8 @@ export async function logout() {
 export async function getCurrentUser() {
   try {
     const response = await account.get();
+
+    console.log(response);
 
     if (response.$id) {
       const userAvatar = await avatar.getInitials(response.name);
